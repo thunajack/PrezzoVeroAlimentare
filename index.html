@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>PrezzoVeroAlimentare</title>
+  <style>
+    :root {
+      --bg: #f6f4ee;
+      --panel: #ffffff;
+      --ink: #252525;
+      --muted: #666;
+      --line: #ddd7cb;
+      --accent: #41664a;
+      --accent-2: #d8eadb;
+      --warn: #8a5a00;
+      --danger: #9b2226;
+      --good: #1f7a4d;
+      --shadow: 0 8px 22px rgba(30, 30, 30, 0.08);
+      --radius: 18px;
+      --tap: 46px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.45;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    header {
+      background:
+        radial-gradient(circle at top left, rgba(216,234,219,0.95), transparent 38%),
+        linear-gradient(135deg, #ffffff 0%, #eef2e8 100%);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.3fr 0.8fr;
+      gap: 20px;
+      align-items: center;
+      padding: 18px 0 22px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 4.2rem);
+      letter-spacing: -0.06em;
+      line-height: 0.95;
+    }
+
+    .tagline {
+      margin: 14px 0 0;
+      font-size: clamp(1rem, 2vw, 1.3rem);
+      color: #3d4b3e;
+      max-width: 760px;
+    }
+
+    .notice {
+      background: #fff8e8;
+      border: 1px solid #ebd39b;
+      color: #523b00;
+      border-radius: var(--radius);
+      padding: 15px;
+      box-shadow: var(--shadow);
+      font-size: 0.96rem;
+    }
+
+    .notice strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    main .wrap {
+      padding-top: 16px;
+    }
+
+    .mobile-filter-toggle {
+      display: none;
+      width: 100%;
+      min-height: var(--tap);
+      border: 1px solid var(--line);
+      background: var(--accent);
+      color: #fff;
+      border-radius: 14px;
+      font: inherit;
+      font-weight: 850;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+
+    .controls {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      display: grid;
+      grid-template-columns: 2fr repeat(4, 1fr);
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 4;
+    }
+
+    label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    input, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 11px 12px;
+      font: inherit;
+      background: #fff;
+      color: var(--ink);
+      min-height: var(--tap);
+      font-size: 16px;
+    }
+
+    .quick-cats {
+      display: none;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 2px 0 12px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .quick-cats::-webkit-scrollbar { display: none; }
+
+    .quick-cat {
+      flex: 0 0 auto;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 999px;
+      padding: 10px 13px;
+      min-height: 42px;
+      font-weight: 800;
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    .quick-cat.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin: 16px 0 12px;
+      color: var(--muted);
+      flex-wrap: wrap;
+    }
+
+    .toggle {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .toggle input {
+      width: 20px;
+      min-height: 20px;
+      accent-color: var(--accent);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 288px;
+    }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .category {
+      font-size: 0.76rem;
+      color: var(--muted);
+      font-weight: 850;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      font-size: 1.22rem;
+      margin: 3px 0 0;
+      letter-spacing: -0.02em;
+      line-height: 1.14;
+    }
+
+    .price {
+      font-size: 1.9rem;
+      font-weight: 900;
+      letter-spacing: -0.045em;
+      white-space: nowrap;
+      text-align: right;
+    }
+
+    .price span {
+      font-size: 0.96rem;
+      color: var(--muted);
+      font-weight: 750;
+      letter-spacing: 0;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .pill {
+      border-radius: 999px;
+      padding: 5px 8px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      border: 1px solid transparent;
+      background: #f0f0ec;
+      color: #444;
+      line-height: 1.15;
+    }
+
+    .pill.good { background: #e4f3eb; color: var(--good); border-color: #bedfcf; }
+    .pill.medium { background: #fff4d7; color: var(--warn); border-color: #ead28e; }
+    .pill.bad { background: #fbe3e4; color: var(--danger); border-color: #edb4b7; }
+    .pill.info { background: #e7edf6; color: #234a7c; border-color: #c9d6ea; }
+
+    .meta {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .meta div {
+      margin: 2px 0;
+    }
+
+    .meta strong {
+      color: var(--ink);
+    }
+
+    .warning {
+      border-left: 4px solid #d19b2a;
+      background: #fff9ec;
+      padding: 9px 11px;
+      border-radius: 12px;
+      color: #5e4200;
+      font-size: 0.88rem;
+    }
+
+    .actions {
+      margin-top: auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+
+    button, .source-link {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 12px;
+      padding: 10px 9px;
+      min-height: var(--tap);
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      font-size: 0.92rem;
+      touch-action: manipulation;
+    }
+
+    button:hover, .source-link:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .primary {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .primary:hover {
+      color: white;
+      filter: brightness(0.95);
+    }
+
+    dialog {
+      border: 0;
+      border-radius: 22px;
+      max-width: 820px;
+      width: calc(100vw - 24px);
+      padding: 0;
+      box-shadow: 0 30px 90px rgba(0,0,0,0.35);
+    }
+
+    dialog::backdrop {
+      background: rgba(0,0,0,0.45);
+    }
+
+    .modal {
+      padding: 20px;
+      background: #fff;
+      border-radius: 22px;
+      max-height: min(86vh, 760px);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+      position: sticky;
+      top: -20px;
+      background: #fff;
+      z-index: 2;
+      padding-top: 2px;
+    }
+
+    .modal h3 {
+      margin: 0;
+      font-size: 1.42rem;
+      line-height: 1.08;
+    }
+
+    .close {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      padding: 0;
+      font-size: 1.3rem;
+      flex: 0 0 auto;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .detail {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 11px 12px;
+      background: #faf9f5;
+    }
+
+    .detail small {
+      display: block;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 850;
+      margin-bottom: 4px;
+      font-size: 0.72rem;
+    }
+
+    .detail b {
+      word-break: break-word;
+    }
+
+    .about {
+      margin-top: 24px;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .about h3 {
+      margin-top: 0;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .about-card {
+      background: #faf9f5;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .about-card p {
+      margin-bottom: 0;
+    }
+
+    .empty {
+      border: 1px dashed #b9b09f;
+      border-radius: var(--radius);
+      padding: 28px;
+      color: var(--muted);
+      text-align: center;
+      background: #fff;
+    }
+
+    footer {
+      color: var(--muted);
+      padding: 26px 0 42px;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 980px) {
+      .hero, .grid, .about-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .controls {
+        grid-template-columns: 1fr 1fr;
+        position: static;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .wrap {
+        padding: 14px;
+      }
+
+      .hero {
+        padding: 10px 0 14px;
+        gap: 12px;
+      }
+
+      h1 {
+        font-size: clamp(2.15rem, 13vw, 3.35rem);
+      }
+
+      .tagline {
+        font-size: 1rem;
+        margin-top: 10px;
+      }
+
+      .notice {
+        font-size: 0.9rem;
+        padding: 12px;
+      }
+
+      .mobile-filter-toggle {
+        display: block;
+        position: sticky;
+        top: 8px;
+        z-index: 5;
+        box-shadow: var(--shadow);
+      }
+
+      .quick-cats {
+        display: flex;
+      }
+
+      .controls {
+        display: none;
+        grid-template-columns: 1fr;
+        padding: 12px;
+        gap: 10px;
+        margin-bottom: 12px;
+        position: static;
+      }
+
+      .controls.open {
+        display: grid;
+      }
+
+      .summary-row {
+        font-size: 0.9rem;
+        margin-top: 10px;
+      }
+
+      .toggle {
+        width: 100%;
+        align-items: flex-start;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 10px;
+      }
+
+      .card {
+        padding: 14px;
+        min-height: auto;
+        border-radius: 16px;
+        gap: 10px;
+      }
+
+      .card-head {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+
+      h2 {
+        font-size: 1.18rem;
+      }
+
+      .price {
+        text-align: left;
+        font-size: 2.1rem;
+      }
+
+      .pill {
+        font-size: 0.72rem;
+        padding: 5px 7px;
+      }
+
+      .warning {
+        font-size: 0.84rem;
+        padding: 8px 10px;
+      }
+
+      .actions {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .actions .source-link,
+      .actions button:nth-child(3) {
+        grid-column: 1 / -1;
+      }
+
+      dialog {
+        width: 100vw;
+        max-width: 100vw;
+        margin: auto 0 0 0;
+        border-radius: 22px 22px 0 0;
+      }
+
+      .modal {
+        border-radius: 22px 22px 0 0;
+        max-height: 88vh;
+        padding: 16px;
+      }
+
+      .modal-head {
+        top: -16px;
+      }
+
+      .details-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .about {
+        padding: 15px;
+      }
+
+      .about-grid {
+        gap: 10px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .price {
+        font-size: 1.85rem;
+      }
+
+      .actions {
+        grid-template-columns: 1fr;
+      }
+
+      .actions .source-link,
+      .actions button:nth-child(3) {
+        grid-column: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap hero">
+      <div>
+        <h1>PrezzoVero<br/>Alimentare</h1>
+        <p class="tagline">Prezzi alimentari pubblici e rilevati, leggibili a colpo d’occhio, con fonte, data, mercato/origine e livello di verificabilità.</p>
+      </div>
+      <div class="notice">
+        <strong>Confronto orientativo, non “prezzo giusto”.</strong>
+        Serve per farsi un’idea veloce dell’ordine di grandezza dei prezzi. Non indica dove conviene fare la spesa e non stabilisce se un negozio sia caro o economico.
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <button class="mobile-filter-toggle" id="filterToggle" aria-expanded="false">Filtri e ricerca</button>
+
+      <div class="quick-cats" id="quickCats" aria-label="Categorie rapide">
+        <button class="quick-cat active" data-cat="">Tutto</button>
+      </div>
+
+      <section class="controls" id="controls" aria-label="Filtri">
+        <div>
+          <label for="search">Cerca prodotto</label>
+          <input id="search" type="search" placeholder="es. zucchine, filetto, orata..." />
+        </div>
+        <div>
+          <label for="category">Categoria</label>
+          <select id="category">
+            <option value="">Tutte</option>
+          </select>
+        </div>
+        <div>
+          <label for="phase">Tipo dato</label>
+          <select id="phase">
+            <option value="">Tutti</option>
+            <option value="consumo">Consumo</option>
+            <option value="ingrosso">Ingrosso</option>
+            <option value="origine">Origine</option>
+          </select>
+        </div>
+        <div>
+          <label for="verification">Fonte</label>
+          <select id="verification">
+            <option value="">Tutte</option>
+            <option value="pubblica">Pubblica verificabile</option>
+            <option value="dichiarata">Dichiarata</option>
+            <option value="mancante">Mancante</option>
+          </select>
+        </div>
+        <div>
+          <label for="market">Mercato / origine</label>
+          <select id="market">
+            <option value="">Tutti</option>
+          </select>
+        </div>
+      </section>
+
+      <div class="summary-row">
+        <div id="count">0 risultati</div>
+        <label class="toggle">
+          <input type="checkbox" id="includeUnverified" />
+          includi dati senza fonte nei risultati
+        </label>
+      </div>
+
+      <section id="cards" class="grid"></section>
+
+      <section class="about">
+        <h3>Come leggere PrezzoVeroAlimentare</h3>
+        <div class="about-grid">
+          <div class="about-card">
+            <strong>🟢 Fonte pubblica verificabile</strong>
+            <p>Dato collegato a listino, banca dati, PDF o pagina pubblica. È il livello più solido.</p>
+          </div>
+          <div class="about-card">
+            <strong>🟡 Fonte dichiarata</strong>
+            <p>Prezzo inserito da supermercato, macelleria, pescheria, mercato, scontrino o volantino non linkabile.</p>
+          </div>
+          <div class="about-card">
+            <strong>🔴 Fonte mancante</strong>
+            <p>Dato manuale senza provenienza chiara. Va letto con cautela e non dovrebbe entrare nei riepiloghi principali.</p>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        Versione prototipo con dati dimostrativi. Prima della pubblicazione reale, sostituire i dati demo con fonti verificabili e controllare licenze/condizioni d’uso delle fonti.
+      </footer>
+    </div>
+  </main>
+
+  <dialog id="detailDialog">
+    <div class="modal">
+      <div class="modal-head">
+        <div>
+          <div class="category" id="modalCategory"></div>
+          <h3 id="modalTitle"></h3>
+          <div class="pill-row" id="modalPills"></div>
+        </div>
+        <button class="close" id="closeDialog" aria-label="Chiudi">×</button>
+      </div>
+      <div id="modalWarning"></div>
+      <h4>Dettaglio pratico</h4>
+      <div class="details-grid" id="practicalDetails"></div>
+      <h4>Dati tecnici</h4>
+      <div class="details-grid" id="technicalDetails"></div>
+    </div>
+  </dialog>
+
+  <script>
+    const records = [
+      {
+        id: "zucchine-bologna-demo",
+        categoria: "Verdura",
+        prodotto_pubblico: "Zucchine",
+        prodotto_tecnico: "Zucchine scure - prodotto nazionale",
+        fase_filiera: "ingrosso",
+        stato_prodotto: "sfuso",
+        prezzo_medio: 1.35,
+        prezzo_min: 1.10,
+        prezzo_max: 1.60,
+        unita: "€/kg",
+        data_rilevazione: "2026-W22",
+        data_label: "Settimana 22/2026",
+        fonte_nome: "Osservaprezzi MIMIT",
+        fonte_tipo: "pubblica",
+        mercato_piazza: "Mercato ortofrutticolo di Bologna",
+        condizione_vendita: "mercato all’ingrosso",
+        iva: "non indicata",
+        url_fonte: "https://osservaprezzi.mise.gov.it/prezzi/livelli/prodotti-ortofrutticoli-all-ingrosso",
+        confrontabilita: "media",
+        nota_consumatore: "Prezzo all’ingrosso: utile per capire il mercato, ma non confrontabile direttamente con il prezzo al supermercato.",
+        demo: true
+      },
+      {
+        id: "filetto-bovino-demo",
+        categoria: "Carne",
+        prodotto_pubblico: "Filetto di manzo",
+        prodotto_tecnico: "Carne fresca bovino adulto - filetto",
+        specie: "bovino",
+        taglio: "filetto",
+        fase_filiera: "consumo",
+        stato_prodotto: "taglio al consumo",
+        prezzo_medio: 38.50,
+        prezzo_min: 34.90,
+        prezzo_max: 42.00,
+        unita: "€/kg",
+        data_rilevazione: "2026-05",
+        data_label: "Maggio 2026",
+        fonte_nome: "Esempio rilevazione al consumo",
+        fonte_tipo: "dichiarata",
+        mercato_piazza: "Supermercato dichiarato",
+        condizione_vendita: "prezzo al banco / confezionato",
+        iva: "probabilmente inclusa, da verificare",
+        url_fonte: "",
+        confrontabilita: "alta",
+        nota_consumatore: "Dato dimostrativo: il taglio è vicino a ciò che il consumatore vede al banco, ma la fonte non è pubblicamente verificabile.",
+        demo: true
+      },
+      {
+        id: "vitellone-vivo-demo",
+        categoria: "Carne",
+        prodotto_pubblico: "Bovino adulto vivo",
+        prodotto_tecnico: "Vitelloni da macello - incrocio I qualità",
+        specie: "bovino",
+        taglio: "",
+        fase_filiera: "origine",
+        stato_prodotto: "vivo",
+        prezzo_medio: 5.05,
+        prezzo_min: null,
+        prezzo_max: null,
+        unita: "€/kg peso vivo",
+        data_rilevazione: "2026-W20",
+        data_label: "Settimana 20/2026",
+        fonte_nome: "ISMEA Mercati",
+        fonte_tipo: "pubblica",
+        mercato_piazza: "Piazza di Milano",
+        condizione_vendita: "franco azienda",
+        iva: "generalmente esclusa, salvo eccezioni della fonte",
+        url_fonte: "https://www.ismeamercati.it/prezzi-agroalimentari",
+        confrontabilita: "bassa",
+        nota_consumatore: "Prezzo tecnico riferito all’animale vivo: non confrontabile con bistecca, filetto o altri tagli al supermercato.",
+        demo: true
+      },
+      {
+        id: "orata-demo",
+        categoria: "Pesce",
+        prodotto_pubblico: "Orata",
+        prodotto_tecnico: "Orata allevata 400/600 g",
+        specie: "orata",
+        metodo: "allevata",
+        stato_prodotto: "intera fresca",
+        fase_filiera: "ingrosso",
+        prezzo_medio: 7.80,
+        prezzo_min: 6.90,
+        prezzo_max: 8.50,
+        unita: "€/kg",
+        data_rilevazione: "2026-W22",
+        data_label: "Settimana 22/2026",
+        fonte_nome: "Esempio mercato ittico",
+        fonte_tipo: "dichiarata",
+        mercato_piazza: "Mercato ittico dichiarato",
+        condizione_vendita: "ingrosso",
+        iva: "non indicata",
+        url_fonte: "",
+        confrontabilita: "media",
+        nota_consumatore: "Per il pesce contano specie, pescato/allevato, pezzatura, intero/filetto e freschezza. Non confrontare direttamente con filetto o prodotto confezionato.",
+        demo: true
+      },
+      {
+        id: "pomodori-mancante-demo",
+        categoria: "Verdura",
+        prodotto_pubblico: "Pomodori ramati",
+        prodotto_tecnico: "Pomodori ramati - dato manuale",
+        fase_filiera: "consumo",
+        stato_prodotto: "sfuso",
+        prezzo_medio: 3.49,
+        prezzo_min: null,
+        prezzo_max: null,
+        unita: "€/kg",
+        data_rilevazione: "2026-06-02",
+        data_label: "02/06/2026",
+        fonte_nome: "Fonte non indicata",
+        fonte_tipo: "mancante",
+        mercato_piazza: "Non specificato",
+        condizione_vendita: "non specificata",
+        iva: "non indicata",
+        url_fonte: "",
+        confrontabilita: "non valutabile",
+        nota_consumatore: "Dato manuale senza fonte: da usare solo come promemoria, non come dato verificato.",
+        demo: true
+      },
+      {
+        id: "mele-demo",
+        categoria: "Frutta",
+        prodotto_pubblico: "Mele Golden",
+        prodotto_tecnico: "Mele Golden Delicious - origine",
+        fase_filiera: "origine",
+        stato_prodotto: "prodotto agricolo",
+        prezzo_medio: 0.72,
+        prezzo_min: 0.60,
+        prezzo_max: 0.85,
+        unita: "€/kg",
+        data_rilevazione: "2026-W21",
+        data_label: "Settimana 21/2026",
+        fonte_nome: "ISMEA Mercati",
+        fonte_tipo: "pubblica",
+        mercato_piazza: "Piazza di Verona",
+        condizione_vendita: "origine / produzione",
+        iva: "generalmente esclusa, salvo eccezioni della fonte",
+        url_fonte: "https://www.ismeamercati.it/prezzi-agroalimentari",
+        confrontabilita: "bassa",
+        nota_consumatore: "Prezzo all’origine: aiuta a leggere la filiera, ma non rappresenta il prezzo finale di negozio.",
+        demo: true
+      }
+    ];
+
+    const state = {
+      search: "",
+      category: "",
+      phase: "",
+      verification: "",
+      market: "",
+      includeUnverified: false
+    };
+
+    const els = {
+      search: document.getElementById("search"),
+      category: document.getElementById("category"),
+      phase: document.getElementById("phase"),
+      verification: document.getElementById("verification"),
+      market: document.getElementById("market"),
+      includeUnverified: document.getElementById("includeUnverified"),
+      cards: document.getElementById("cards"),
+      count: document.getElementById("count"),
+      dialog: document.getElementById("detailDialog"),
+      closeDialog: document.getElementById("closeDialog"),
+      modalCategory: document.getElementById("modalCategory"),
+      modalTitle: document.getElementById("modalTitle"),
+      modalPills: document.getElementById("modalPills"),
+      modalWarning: document.getElementById("modalWarning"),
+      practicalDetails: document.getElementById("practicalDetails"),
+      technicalDetails: document.getElementById("technicalDetails"),
+      filterToggle: document.getElementById("filterToggle"),
+      controls: document.getElementById("controls"),
+      quickCats: document.getElementById("quickCats")
+    };
+
+    function uniqueSorted(key) {
+      return [...new Set(records.map(r => r[key]).filter(Boolean))].sort((a,b) => a.localeCompare(b, "it"));
+    }
+
+    function initSelects() {
+      uniqueSorted("categoria").forEach(v => {
+        els.category.append(new Option(v, v));
+        const b = document.createElement("button");
+        b.className = "quick-cat";
+        b.dataset.cat = v;
+        b.textContent = v;
+        els.quickCats.appendChild(b);
+      });
+      uniqueSorted("mercato_piazza").forEach(v => els.market.append(new Option(v, v)));
+    }
+
+    function money(value) {
+      if (value === null || value === undefined || value === "") return "n.d.";
+      return new Intl.NumberFormat("it-IT", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
+    }
+
+    function verificationBadge(record) {
+      if (record.fonte_tipo === "pubblica") return { text: "🟢 Fonte verificabile", cls: "good" };
+      if (record.fonte_tipo === "dichiarata") return { text: "🟡 Fonte dichiarata", cls: "medium" };
+      return { text: "🔴 Fonte mancante", cls: "bad" };
+    }
+
+    function verificationBadgeFull(record) {
+      if (record.fonte_tipo === "pubblica") return { text: "🟢 Fonte pubblica verificabile", cls: "good" };
+      if (record.fonte_tipo === "dichiarata") return { text: "🟡 Fonte dichiarata", cls: "medium" };
+      return { text: "🔴 Fonte mancante", cls: "bad" };
+    }
+
+    function comparabilityBadge(record) {
+      if (record.confrontabilita === "alta") return { text: "Confrontabilità alta", cls: "good" };
+      if (record.confrontabilita === "media") return { text: "Confrontabilità media", cls: "medium" };
+      if (record.confrontabilita === "bassa") return { text: "Confrontabilità bassa", cls: "bad" };
+      return { text: "Confrontabilità n.d.", cls: "bad" };
+    }
+
+    function phaseLabel(value) {
+      return value.charAt(0).toUpperCase() + value.slice(1);
+    }
+
+    function pill(text, cls = "") {
+      return `<span class="pill ${cls}">${text}</span>`;
+    }
+
+    function matches(record) {
+      const haystack = [
+        record.prodotto_pubblico,
+        record.prodotto_tecnico,
+        record.categoria,
+        record.fonte_nome,
+        record.mercato_piazza,
+        record.taglio,
+        record.specie
+      ].filter(Boolean).join(" ").toLowerCase();
+
+      const q = state.search.trim().toLowerCase();
+
+      if (q && !haystack.includes(q)) return false;
+      if (state.category && record.categoria !== state.category) return false;
+      if (state.phase && record.fase_filiera !== state.phase) return false;
+      if (state.verification && record.fonte_tipo !== state.verification) return false;
+      if (state.market && record.mercato_piazza !== state.market) return false;
+      if (!state.includeUnverified && record.fonte_tipo === "mancante") return false;
+      return true;
+    }
+
+    function updateQuickCats() {
+      [...els.quickCats.querySelectorAll(".quick-cat")].forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.cat === state.category);
+      });
+    }
+
+    function render() {
+      const filtered = records.filter(matches);
+      els.count.textContent = `${filtered.length} risultat${filtered.length === 1 ? "o" : "i"} visualizzat${filtered.length === 1 ? "o" : "i"}`;
+      updateQuickCats();
+
+      if (!filtered.length) {
+        els.cards.innerHTML = `<div class="empty" style="grid-column: 1 / -1;">Nessun risultato con questi filtri. Prova ad ampliare la ricerca o includere i dati senza fonte.</div>`;
+        return;
+      }
+
+      els.cards.innerHTML = filtered.map(record => {
+        const vb = verificationBadge(record);
+        const cb = comparabilityBadge(record);
+        const minMax = record.prezzo_min !== null && record.prezzo_max !== null
+          ? `Min-max: <strong>${money(record.prezzo_min)}–${money(record.prezzo_max)} ${record.unita}</strong>`
+          : `Min-max: <strong>non disponibile</strong>`;
+
+        const sourceButton = record.url_fonte
+          ? `<a class="source-link" href="${record.url_fonte}" target="_blank" rel="noopener">Apri fonte</a>`
+          : `<button title="Nessun link disponibile" disabled>Fonte n.d.</button>`;
+
+        return `
+          <article class="card">
+            <div class="card-head">
+              <div>
+                <div class="category">${record.categoria}</div>
+                <h2>${record.prodotto_pubblico}</h2>
+              </div>
+              <div class="price">${money(record.prezzo_medio)} <span>${record.unita}</span></div>
+            </div>
+
+            <div class="pill-row">
+              ${pill(phaseLabel(record.fase_filiera), "info")}
+              ${pill(vb.text, vb.cls)}
+              ${pill(cb.text, cb.cls)}
+              ${record.demo ? pill("Demo", "info") : ""}
+            </div>
+
+            <div class="meta">
+              <div>Data: <strong>${record.data_label}</strong></div>
+              <div>Fonte: <strong>${record.fonte_nome}</strong></div>
+              <div>Mercato/origine: <strong>${record.mercato_piazza}</strong></div>
+              <div>${minMax}</div>
+            </div>
+
+            <div class="warning">${record.nota_consumatore}</div>
+
+            <div class="actions">
+              <button class="primary" onclick="openDetails('${record.id}', 'pratico')">Dettagli</button>
+              <button onclick="openDetails('${record.id}', 'tecnico')">Tecnico</button>
+              ${sourceButton}
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function detailItem(label, value) {
+      return `<div class="detail"><small>${label}</small><b>${value || "n.d."}</b></div>`;
+    }
+
+    window.openDetails = function(id, mode) {
+      const record = records.find(r => r.id === id);
+      if (!record) return;
+
+      const vb = verificationBadgeFull(record);
+      const cb = comparabilityBadge(record);
+
+      els.modalCategory.textContent = record.categoria;
+      els.modalTitle.textContent = record.prodotto_pubblico;
+      els.modalPills.innerHTML = [
+        pill(phaseLabel(record.fase_filiera), "info"),
+        pill(vb.text, vb.cls),
+        pill(cb.text, cb.cls),
+        record.demo ? pill("Dato dimostrativo", "info") : ""
+      ].join("");
+
+      els.modalWarning.innerHTML = `<div class="warning">${record.nota_consumatore}</div>`;
+
+      els.practicalDetails.innerHTML = [
+        detailItem("Prezzo medio", `${money(record.prezzo_medio)} ${record.unita}`),
+        detailItem("Prezzo minimo", record.prezzo_min === null ? "non disponibile" : `${money(record.prezzo_min)} ${record.unita}`),
+        detailItem("Prezzo massimo", record.prezzo_max === null ? "non disponibile" : `${money(record.prezzo_max)} ${record.unita}`),
+        detailItem("Data rilevazione", record.data_label),
+        detailItem("Fonte", record.fonte_nome),
+        detailItem("Mercato / origine", record.mercato_piazza),
+        detailItem("Tipo dato", phaseLabel(record.fase_filiera)),
+        detailItem("Stato prodotto", record.stato_prodotto)
+      ].join("");
+
+      els.technicalDetails.innerHTML = [
+        detailItem("Denominazione fonte", record.prodotto_tecnico),
+        detailItem("Categoria", record.categoria),
+        detailItem("Specie", record.specie || "non applicabile / non indicata"),
+        detailItem("Taglio", record.taglio || "non applicabile / non indicato"),
+        detailItem("Metodo / pesca / allevamento", record.metodo || "non applicabile / non indicato"),
+        detailItem("Unità di misura", record.unita),
+        detailItem("Condizione vendita", record.condizione_vendita),
+        detailItem("IVA", record.iva),
+        detailItem("Tipo fonte", record.fonte_tipo),
+        detailItem("URL fonte", record.url_fonte ? record.url_fonte : "non disponibile"),
+        detailItem("Data normalizzata", record.data_rilevazione),
+        detailItem("Confrontabilità", record.confrontabilita)
+      ].join("");
+
+      els.dialog.showModal();
+      if (mode === "tecnico") {
+        setTimeout(() => els.technicalDetails.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
+      }
+    };
+
+    function updateState() {
+      state.search = els.search.value;
+      state.category = els.category.value;
+      state.phase = els.phase.value;
+      state.verification = els.verification.value;
+      state.market = els.market.value;
+      state.includeUnverified = els.includeUnverified.checked;
+      render();
+    }
+
+    ["input", "change"].forEach(evt => {
+      [els.search, els.category, els.phase, els.verification, els.market, els.includeUnverified].forEach(el => {
+        el.addEventListener(evt, updateState);
+      });
+    });
+
+    els.quickCats.addEventListener("click", event => {
+      const button = event.target.closest(".quick-cat");
+      if (!button) return;
+      state.category = button.dataset.cat;
+      els.category.value = state.category;
+      render();
+    });
+
+    els.filterToggle.addEventListener("click", () => {
+      const open = els.controls.classList.toggle("open");
+      els.filterToggle.setAttribute("aria-expanded", String(open));
+      els.filterToggle.textContent = open ? "Nascondi filtri" : "Filtri e ricerca";
+    });
+
+    els.closeDialog.addEventListener("click", () => els.dialog.close());
+    els.dialog.addEventListener("click", event => {
+      const rect = els.dialog.getBoundingClientRect();
+      const clickedOutside =
+        event.clientX < rect.left || event.clientX > rect.right ||
+        event.clientY < rect.top || event.clientY > rect.bottom;
+      if (clickedOutside) els.dialog.close();
+    });
+
+    initSelects();
+    render();
+  </script>
+</body>
+</html>
